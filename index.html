@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>AI-initiatievenbank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Koppen: Obviously Narrow Black als die lokaal is geïnstalleerd (merkboek H05); anders Barlow Condensed als openbare vervanger.
+   Het Obviously-bestand staat bewust niet in deze openbare website. */
+
+/* Layout: Domino's-huisstijl. Witte topbalk met logo, rood merkvlak met sticker, crème werkvlak met witte kaarten, zijpaneel om te beoordelen.
+   Bewust één (licht) thema: het merkpalet uit H03 is vast, zonder verlopen. */
+:root{
+  --rood:#e31837; --blauw:#006491; --blauw-donker:#004e72; --bordeaux:#6e0430;
+  --roze:#ffbdc2; --creme:#fcf4e8; --lichtblauw:#a7cfd7; --wit:#ffffff;
+  --tekst:#1a1a1a; --tekst-zacht:#5a5a5a; --rand:#e6ddd0; --rand-sterk:#cfc3b2;
+  --goed:#1d7a46; --let-op:#b0610d;
+  --c1:var(--rood); --c2:var(--blauw); --c3:var(--bordeaux); --c4:var(--lichtblauw); --c5:var(--roze);
+  --f-kop:"Obviously Narrow", "Barlow Condensed", "Arial Narrow", sans-serif;
+  --f-tekst:"Jost", "Futura Std", Futura, "Century Gothic", system-ui, sans-serif;
+  --gutter:clamp(1rem,4vw,3rem);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--creme);color:var(--tekst);font:300 16px/1.55 var(--f-tekst)}
+img{max-width:100%}
+.av-init{display:inline-flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:500;color:var(--wit);background:var(--blauw);text-transform:uppercase}
+.slot .goed{background:var(--wit);border-radius:10px;padding:12px 14px;font-weight:400}
+.slot-velden{display:flex;flex-direction:column;gap:12px}
+.slot-veld{display:flex;flex-direction:column;gap:5px}
+.slot-veld label{font-weight:500}
+.slot-veld .hint{font-size:.82rem;color:var(--tekst-zacht)}
+.slot #slotKnop{align-self:flex-start}
+.slot-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px}
+h1,h2,h3,.kop{font-family:var(--f-kop);font-weight:900;text-transform:lowercase;letter-spacing:0;margin:0;text-wrap:balance}
+h1{line-height:.85} h2{line-height:.9} h3{line-height:.95}
+p{margin:0}
+b,strong{font-weight:500}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blauw);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.zacht{color:var(--tekst-zacht)}
+
+/* topbalk */
+.topbalk{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding-inline:var(--gutter);padding-block:14px;background:var(--wit);border-bottom:1px solid var(--rand)}
+/* Naam naast het logo: zelfde blauw als het woordmerk; x-hoogte gelijk aan die van "domino's" en de basislijn op de onderkant van het logo.
+   Obviously: x-hoogte .65em, ascent 1.16em, descent .41em -> bij line-height 1 ligt de basislijn .125em boven de onderkant van de regel. */
+.logo{display:flex;align-items:flex-end;gap:14px;min-width:0}
+.logo svg{width:150px;height:30px;display:block;flex:none}
+.logo .scheid{width:1px;height:30px;background:var(--rand);align-self:center}
+.logo span{display:block;font-family:var(--f-kop);font-weight:900;font-size:23.5px;line-height:1;margin-bottom:-.125em;color:#0090e2;text-transform:lowercase;white-space:nowrap}
+.me{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--tekst-zacht)}
+.av{width:26px;height:26px;border-radius:50%;flex:none;background:var(--creme);object-fit:cover}
+.rechts{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap}
+.rolbalk{display:flex;align-items:center;gap:10px}
+.rol{font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:1rem;line-height:1;border-radius:999px;padding:.35em .9em .4em;background:var(--creme);color:var(--blauw)}
+.rol.jury{background:var(--rood);color:var(--wit)}
+.linkknop{background:none;border:0;padding:0;color:var(--blauw);text-decoration:underline;cursor:pointer;font-size:.88rem;font-weight:400}
+@media (max-width:520px){.logo .scheid,.logo span{display:none}}
+
+/* merkvlak */
+.hero{background:var(--rood);color:var(--creme);padding-inline:var(--gutter);padding-block:clamp(2.5rem,6vw,4.5rem);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2rem;align-items:center;overflow:hidden}
+.hero h1{font-size:clamp(3rem,9vw,6.5rem);color:var(--creme);margin-bottom:1.1rem}
+.hero h1 em{font-style:normal;color:var(--roze)}
+.hero p{font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:36rem}
+.sticker{position:relative;width:clamp(10rem,18vw,14rem);aspect-ratio:1;flex:none;transform:rotate(-8deg);color:var(--rood)}
+.sticker svg{position:absolute;inset:0;width:100%;height:100%}
+.sticker-inhoud{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8%;padding-right:6%;font-family:var(--f-kop);font-weight:900;line-height:.85;text-align:center;text-transform:lowercase}
+.sticker-getal{font-size:clamp(2.8rem,5.5vw,4.4rem)}
+.sticker-label{font-size:clamp(1.1rem,2vw,1.5rem);max-width:80%}
+.prijzen{display:flex;align-items:center;gap:clamp(.5rem,2vw,1.5rem)}
+/* bokaal-sticker voor het team met de meeste inzendingen: platte kleur, geen schaduw of verloop */
+.bokaal{position:relative;width:clamp(9.5rem,15vw,12rem);aspect-ratio:100/112;flex:none;transform:rotate(7deg);color:var(--bordeaux)}
+.bokaal svg{position:absolute;inset:0;width:100%;height:100%}
+.bokaal-beker{position:absolute;left:18%;right:18%;top:9%;height:52%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--f-kop);font-weight:900;text-transform:lowercase;line-height:.85}
+.bokaal-label{font-size:clamp(.85rem,1.2vw,1rem)}
+.bokaal-team{font-size:clamp(1.7rem,2.8vw,2.3rem);color:var(--rood);overflow-wrap:anywhere}
+.bokaal-team.klein{font-size:clamp(1.05rem,1.7vw,1.35rem)}
+.bokaal-voet{position:absolute;left:24%;right:24%;top:88%;height:10%;display:flex;align-items:center;justify-content:center;font-size:clamp(.6rem,.9vw,.75rem);font-weight:500;color:var(--creme);white-space:nowrap}
+@media (max-width:700px){.hero{grid-template-columns:minmax(0,1fr)}.prijzen{justify-content:flex-end;margin-top:-.5rem}.sticker{width:8.5rem}.bokaal{width:8rem}.bokaal-team{font-size:1.5rem}.bokaal-voet{font-size:.58rem}}
+
+.werk{max-width:1120px;margin:0 auto;padding-inline:var(--gutter);padding-block:2rem 4rem;display:flex;flex-direction:column;gap:1.5rem}
+
+/* cijfers */
+.cijfers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cijfer{background:var(--wit);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.cijfer span{font-size:.9rem;color:var(--tekst-zacht)}
+.cijfer b{font-family:var(--f-kop);font-weight:900;font-size:2.4rem;line-height:.9;color:var(--blauw)}
+.cijfer small{font-size:.85rem;color:var(--tekst-zacht);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:760px){.cijfers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* teamstand */
+.teamstand{background:var(--blauw);color:var(--wit);border-radius:14px;padding:clamp(18px,3vw,26px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px 32px;align-items:center}
+.teamstand .lbl{font-size:.9rem;color:var(--lichtblauw);font-weight:400}
+.teamstand h2{font-size:clamp(2rem,4.5vw,3.2rem);color:var(--wit);margin-top:4px}
+.teamstand h2 em{font-style:normal;color:var(--lichtblauw)}
+.teamstand .sub{margin-top:8px;color:var(--lichtblauw);font-weight:400}
+.teams{display:flex;flex-direction:column;gap:8px}
+.team{display:grid;grid-template-columns:72px minmax(0,1fr) 28px;gap:12px;align-items:center}
+.team span:first-child{font-family:var(--f-kop);font-weight:900;font-size:1.2rem;line-height:1;text-transform:lowercase}
+.team .tb{height:12px;background:rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
+.team .tb i{display:block;height:100%;background:var(--lichtblauw);border-radius:999px}
+.team.leider .tb i{background:var(--creme)}
+.team.leider span:first-child{color:var(--creme)}
+.team .n{text-align:right;font-weight:500}
+@media (max-width:700px){.teamstand{grid-template-columns:minmax(0,1fr)}}
+.chip.team-chip{background:var(--blauw);color:var(--wit)}
+
+.melding{background:var(--roze);color:var(--bordeaux);border-radius:14px;padding:12px 16px;font-weight:400}
+
+/* tabs als pillen */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:1.2rem;line-height:1;border:2px solid var(--blauw);background:transparent;color:var(--blauw);border-radius:999px;padding:.5em 1.1em .55em;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--blauw);color:var(--wit)}
+.tab .tel{font-family:var(--f-tekst);font-weight:500;font-size:.8rem;background:var(--rood);color:var(--wit);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:2px;text-transform:none}
+
+/* knoppen (H07): pil, kort */
+.knop{display:inline-flex;align-items:center;justify-content:center;gap:.4em;font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:1.2rem;line-height:1;border:0;border-radius:999px;padding:.55em 1.3em .6em;cursor:pointer;background:var(--rood);color:var(--wit);transition:transform .12s ease}
+.knop:hover{transform:translateY(-2px)}
+.knop.blauw{background:var(--blauw)}
+.knop.licht{background:var(--wit);color:var(--blauw);box-shadow:inset 0 0 0 2px var(--blauw)}
+.knop.gevaar{background:var(--wit);color:var(--rood);box-shadow:inset 0 0 0 2px var(--rood)}
+.knop:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+.balk-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.balk-filters input{flex:1 1 240px;min-width:0}
+input[type=text],input[type=url],input[type=number],select,textarea{background:var(--wit);border:1px solid var(--rand-sterk);border-radius:999px;padding:.7rem 1.1rem;font-weight:400}
+textarea{border-radius:14px;resize:vertical;min-height:120px;width:100%}
+
+.legenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.88rem;color:var(--tekst-zacht)}
+.legenda i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+
+/* kaarten */
+.lijst{display:flex;flex-direction:column;gap:10px}
+.kaart{display:grid;grid-template-columns:52px minmax(0,1fr) 130px;gap:18px;align-items:center;background:var(--wit);border:0;border-radius:14px;padding:18px 20px;cursor:pointer;text-align:left;width:100%;transition:transform .12s ease}
+.kaart:hover{transform:translateY(-2px)}
+.rang{font-family:var(--f-kop);font-weight:900;font-size:2rem;line-height:1;color:var(--rand-sterk);text-align:center}
+.rang.top{color:var(--rood)}
+.kbody{display:flex;flex-direction:column;gap:7px;min-width:0}
+.kbody h3{font-size:1.65rem;color:var(--rood)}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.88rem;color:var(--tekst-zacht);font-weight:400}
+.wie{display:flex;align-items:center;gap:6px}
+.meta .av{width:20px;height:20px}
+.chip{font-size:.78rem;font-weight:500;border-radius:999px;padding:2px 10px;white-space:nowrap;background:var(--creme);color:var(--tekst)}
+.st-idee{background:var(--roze);color:var(--bordeaux)}
+.st-test{background:var(--lichtblauw);color:var(--blauw-donker)}
+.st-gebruik{background:var(--blauw);color:var(--wit)}
+.omschr{color:var(--tekst-zacht);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.balk{display:flex;height:10px;border-radius:999px;background:var(--creme);overflow:hidden;margin-top:3px}
+.balk span{display:block;height:100%}
+.score{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.score b{font-family:var(--f-kop);font-weight:900;font-size:2.8rem;line-height:.85;color:var(--blauw)}
+.score b.nieuw{font-size:1.6rem;color:var(--rand-sterk);text-transform:lowercase}
+.score small{font-size:.82rem;color:var(--tekst-zacht)}
+.mijn{font-size:.78rem;font-weight:500}
+.mijn.klaar{color:var(--goed)} .mijn.open{color:var(--rood)} .mijn.eigen{color:var(--tekst-zacht)}
+@media (max-width:620px){.kaart{grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;padding:16px}.rang{display:none}.kbody h3{font-size:1.4rem}.score b{font-size:2.2rem}}
+
+.leeg{background:var(--wit);border-radius:14px;padding:40px 20px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.leeg h3{font-size:2rem;color:var(--blauw)}
+.leeg p{max-width:50ch;color:var(--tekst-zacht)}
+
+/* formulier */
+form.indienen{background:var(--wit);border-radius:14px;padding:clamp(18px,3vw,30px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px}
+form.indienen h2{font-size:clamp(2rem,4vw,2.8rem);color:var(--rood)}
+.veld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.veld.vol{grid-column:1/-1}
+.veld label{font-weight:500;font-size:.95rem}
+.veld .hint{font-size:.82rem;color:var(--tekst-zacht)}
+.veld input,.veld select{width:100%}
+.voet{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+@media (max-width:620px){form.indienen{grid-template-columns:minmax(0,1fr)}}
+
+/* puntentelling */
+.uitleg{display:flex;flex-direction:column;gap:10px;max-width:66ch}
+.uitleg h2{font-size:clamp(2rem,4vw,2.8rem);color:var(--rood)}
+.rubriek{overflow-x:auto;background:var(--wit);border-radius:14px}
+.rubriek table{border-collapse:collapse;width:100%;min-width:760px;font-size:.9rem}
+.rubriek th,.rubriek td{padding:12px 14px;border-bottom:1px solid var(--rand);text-align:left;vertical-align:top}
+.rubriek th{font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:1.05rem;color:var(--blauw)}
+.rubriek tr:last-child td{border-bottom:0}
+.rubriek td.crit{font-weight:500;white-space:nowrap}
+.rubriek td.crit i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px}
+.rubriek .pnt{font-weight:500;color:var(--blauw)}
+
+/* puntentelling tijdelijk afgeschermd */
+.binnenkort-wrap{position:relative;border-radius:14px;overflow:hidden}
+.vervaagd{display:flex;flex-direction:column;gap:16px;filter:blur(7px);user-select:none;pointer-events:none}
+.binnenkort-melding{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:rgba(252,244,232,.35)}
+.binnenkort-melding span{font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:clamp(2.6rem,8vw,5rem);line-height:.85;background:var(--rood);color:var(--creme);border-radius:999px;padding:.25em .7em .32em;transform:rotate(-6deg)}
+
+/* pizzapunt-knop rechtsonder */
+.pizza{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;width:128px;aspect-ratio:120/130;border:0;padding:0;background:none;cursor:pointer;transform:rotate(-8deg);transform-origin:50% 30%;transition:transform .15s ease,left .28s cubic-bezier(.2,.8,.3,1.2),top .28s cubic-bezier(.2,.8,.3,1.2)}
+@media (prefers-reduced-motion:reduce){.pizza{transition:none}}
+.pizza:hover{transform:rotate(-2deg) scale(1.06)}
+.pizza svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.pizza-tekst{position:absolute;left:14%;right:14%;top:24%;height:25%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-kop);font-weight:900;text-transform:lowercase;font-size:15px;line-height:.9;color:var(--bordeaux);text-align:center}
+@media (prefers-reduced-motion:no-preference){.pizza{animation:wiebel 4s ease-in-out 2s infinite}@keyframes wiebel{0%,86%,100%{transform:rotate(-8deg)}90%{transform:rotate(-14deg)}94%{transform:rotate(-3deg)}}.pizza:hover{animation:none}}
+@media (max-width:620px){.pizza{width:104px}.pizza-tekst{font-size:12.5px}}
+.werk{padding-bottom:9rem}
+
+.pop-scrim{position:fixed;inset:0;z-index:30;background:rgba(110,4,48,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.pop{position:relative;width:min(640px,100%);line-height:0}
+.pop img{display:block;width:100%;height:auto;border-radius:14px}
+.pop .sluit{position:absolute;top:10px;right:10px}
+
+/* wachtwoordscherm: de pagina blijft vervaagd tot het wachtwoord is ingevuld */
+#app.op-slot{filter:blur(12px);pointer-events:none;user-select:none;height:100vh;overflow:hidden}
+.slot{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(227,24,55,.25)}
+.slot form{background:var(--creme);border-radius:14px;width:min(400px,100%);padding:clamp(22px,4vw,32px);display:flex;flex-direction:column;gap:14px}
+.slot svg{width:130px;height:auto}
+.slot h2{font-size:clamp(2.2rem,6vw,2.8rem);color:var(--rood)}
+.slot .rij{display:flex;gap:8px;flex-wrap:wrap}
+.slot input{flex:1 1 160px;min-width:0}
+.slot .fout{color:var(--rood);font-weight:500;min-height:1.4em}
+
+/* zijpaneel */
+.scrim{position:fixed;inset:0;background:rgba(110,4,48,.38);z-index:20;display:flex;justify-content:flex-end}
+.paneel{background:var(--creme);width:min(640px,100%);height:100%;overflow-y:auto;padding-inline:clamp(16px,3vw,26px);padding-block:calc(22px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px}
+.pkop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.pkop h2{font-size:clamp(2rem,5vw,2.8rem);color:var(--rood)}
+.pkop .cat{font-size:.88rem;color:var(--tekst-zacht);font-weight:400;margin-bottom:6px}
+.sluit{background:var(--wit);border:0;border-radius:50%;width:40px;height:40px;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--blauw);flex:none}
+.blok{background:var(--wit);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.blok h3{font-size:1.6rem;color:var(--blauw)}
+.volledig{white-space:pre-wrap;overflow-wrap:anywhere;font-weight:400}
+.feiten{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem;margin:0}
+.feiten dt{color:var(--tekst-zacht)} .feiten dd{margin:0;overflow-wrap:anywhere;font-weight:400}
+.feiten a{color:var(--blauw)}
+.uitsplits{display:grid;grid-template-columns:minmax(0,1fr) 110px 64px;gap:9px 12px;align-items:center;font-size:.92rem}
+.mini{height:8px;background:var(--creme);border-radius:999px;overflow:hidden}
+.mini span{display:block;height:100%}
+.uitsplits .w{text-align:right;font-weight:500}
+.beoordeel{display:flex;flex-direction:column;gap:7px;padding-block:10px;border-top:1px solid var(--rand)}
+.beoordeel:first-of-type{border-top:0}
+.beoordeel .rk{display:flex;justify-content:space-between;gap:10px;font-weight:500}
+.seg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.seg button{border:2px solid var(--rand);background:var(--wit);border-radius:999px;padding:6px 0 7px;cursor:pointer;font-family:var(--f-kop);font-weight:900;font-size:1.25rem;line-height:1;color:var(--tekst-zacht)}
+.seg button:hover{border-color:var(--cc)}
+.seg button[aria-pressed="true"]{background:var(--cc);border-color:var(--cc);color:var(--ct)}
+.niveau{font-size:.88rem;color:var(--tekst-zacht);min-height:1.3em}
+.totaal{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.totaal b{font-family:var(--f-kop);font-weight:900;font-size:2.6rem;line-height:.9;color:var(--blauw)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bordeaux);color:var(--creme);padding:11px 18px;border-radius:999px;z-index:40;font-weight:500;font-size:.95rem;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion:no-preference){.paneel{animation:in .2s ease-out}@keyframes in{from{transform:translateX(40px)}}}
+@media (prefers-reduced-motion:reduce){.knop,.kaart{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="app" class="op-slot" inert aria-hidden="true">
+<header class="topbalk">
+  <div class="logo">
+    <svg viewBox="0 0 180 36" role="img" aria-label="Domino's"><path d="M47.8205 11.7916H39.0996V35.4975H47.8205C54.3667 35.4975 59.6734 30.1907 59.6734 23.6445C59.6734 17.0983 54.3667 11.7916 47.8205 11.7916ZM47.4492 29.0657H45.978V18.2233H47.4492C50.4445 18.2233 52.8704 20.652 52.8704 23.6445C52.8704 26.6371 50.4417 29.0657 47.4492 29.0657ZM100.894 35.4975V25.8415C100.894 24.9621 100.179 24.2475 99.2997 24.2475C98.4203 24.2475 97.7057 24.9621 97.7057 25.8415V35.4975H90.9334V25.8415C90.9334 24.9621 90.2187 24.2475 89.3394 24.2475C88.46 24.2475 87.7454 24.9621 87.7454 25.8415V35.4975H80.9731V18.2233H85.1576L86.961 20.0267C88.0664 18.5834 89.7749 17.7292 91.5922 17.7125C91.6117 17.7125 91.6312 17.7125 91.6508 17.7125C93.4123 17.7125 95.0816 18.4969 96.2038 19.8564C97.4544 18.4885 99.2215 17.7152 101.067 17.7152C104.685 17.7152 107.621 20.6352 107.649 24.2503L107.66 35.5003H100.888L100.894 35.4975ZM79.2562 26.8576C79.2562 31.9076 75.1638 36 70.1139 36C65.0639 36 60.9715 31.9076 60.9715 26.8576C60.9715 21.8077 65.0639 17.7152 70.1139 17.7152C75.1638 17.7152 79.2562 21.8077 79.2562 26.8576ZM73.1986 26.8632C73.1986 26.0732 72.8971 25.2832 72.2969 24.683C71.6939 24.0828 70.9011 23.7813 70.1111 23.7813C69.3211 23.7813 68.5311 24.0828 67.9309 24.683C67.3279 25.286 67.0292 26.0788 67.0292 26.8688C67.0292 27.6588 67.3307 28.4488 67.9309 29.049C68.5339 29.6492 69.3239 29.9507 70.1139 29.9507C70.9039 29.9507 71.6939 29.6492 72.2941 29.049C72.8943 28.446 73.1958 27.6532 73.1958 26.8632H73.1986ZM109.902 35.4975H116.674V18.2233H109.902V35.4975ZM178.178 30.3303C178.178 29.0015 177.653 27.7928 176.534 26.8576C174.306 25.1631 170.864 24.884 169.837 24.4904C169.175 24.2363 168.891 23.8427 168.891 23.4826C168.891 23.022 169.351 22.6116 170.066 22.6116C171.166 22.6116 171.512 23.2146 171.838 24.1582L177.865 23.371C176.947 20.0797 174.225 17.7152 169.979 17.7152C165.733 17.7152 162.263 20.0574 162.263 23.3793C162.263 24.7081 162.788 25.9169 163.908 26.852C166.135 28.5465 169.577 28.8257 170.605 29.2193C171.266 29.4733 171.551 29.8669 171.551 30.227C171.551 30.6876 171.09 31.098 170.376 31.098C169.265 31.098 168.734 30.442 168.346 29.585L161.965 30.3331C162.883 33.6244 166.213 35.9916 170.459 35.9916C174.705 35.9916 178.175 33.6495 178.175 30.3275L178.178 30.3303ZM156.809 26.8576C156.809 31.9076 152.716 36 147.666 36C142.616 36 138.524 31.9076 138.524 26.8576C138.524 21.8077 142.616 17.7152 147.666 17.7152C152.716 17.7152 156.809 21.8077 156.809 26.8576ZM150.751 26.8632C150.751 26.0732 150.449 25.2832 149.849 24.683C149.246 24.0828 148.454 23.7813 147.664 23.7813C146.873 23.7813 146.083 24.0828 145.483 24.683C144.88 25.286 144.582 26.0788 144.582 26.8688C144.582 27.6588 144.883 28.4488 145.483 29.049C146.086 29.6492 146.876 29.9507 147.666 29.9507C148.456 29.9507 149.246 29.6492 149.847 29.049C150.447 28.446 150.748 27.6532 150.748 26.8632H150.751ZM113.291 9.97424C112.384 9.97424 111.476 10.3204 110.784 11.0127C110.092 11.7022 109.746 12.6095 109.746 13.5167C109.746 14.424 110.092 15.3313 110.784 16.0236C111.474 16.7159 112.381 17.062 113.288 17.062C114.195 17.062 115.103 16.7159 115.795 16.0236C116.487 15.334 116.833 14.4268 116.833 13.5195C116.833 12.6123 116.487 11.705 115.795 11.0127C115.105 10.3204 114.198 9.97424 113.291 9.97424ZM136.902 24.2503C136.771 20.6771 133.89 17.8213 130.314 17.718C130.25 17.718 130.183 17.7152 130.119 17.7152C128.167 17.7152 126.302 18.5583 125.013 20.0295L123.209 18.2261H119.025V35.5003H125.797V26.2574C125.797 25.0598 126.769 24.0912 127.963 24.0912C129.158 24.0912 130.13 25.0626 130.13 26.2574V35.5003H136.902V24.2503ZM158.665 22.8852C160.851 21.6234 162.051 19.4572 162.051 17.8018C162.051 16.0012 160.591 14.5384 158.788 14.5384C156.985 14.5384 155.522 16.0068 155.522 17.8018C155.522 19.5968 156.985 21.0679 158.788 21.0679C158.891 21.0679 158.992 21.0623 159.092 21.054C158.997 21.6262 158.754 22.1594 158.383 22.6061L158.665 22.888V22.8852Z" fill="#0090E2"/><path d="M22.2968 0.633693L11.8061 11.1244L11.1249 11.8055L0.634242 22.2962C-0.20881 23.1393 -0.20881 24.5155 0.634242 25.3586L10.2763 35.0006C11.1194 35.8437 12.4956 35.8437 13.3386 35.0006L23.8293 24.5099L24.5105 23.8288L35.0012 13.3381C35.8442 12.495 35.8442 11.1188 35.0012 10.2758L25.3591 0.633693C24.5161 -0.209359 23.1398 -0.209359 22.2968 0.633693Z" fill="#FEFAF6"/><path d="M22.978 1.31487L12.4873 11.8056L23.8294 23.1477L34.3201 12.657C34.7891 12.188 34.7891 11.4259 34.3201 10.9569L24.6781 1.31487C24.2091 0.845889 23.447 0.845889 22.978 1.31487ZM26.6322 11.8056C26.6322 12.5788 26.3167 13.2823 25.8086 13.7876C25.3006 14.2956 24.6027 14.6111 23.8266 14.6111C23.0534 14.6111 22.3499 14.2928 21.8446 13.7876C21.3394 13.2823 21.0211 12.5816 21.0211 11.8056C21.0211 11.0323 21.3366 10.3316 21.8418 9.82356C22.3499 9.31549 23.0478 9.00005 23.8266 9.00005C24.6055 9.00005 25.3006 9.31549 25.8086 9.82356C26.3139 10.3288 26.6322 11.0295 26.6322 11.8056Z" fill="#FF0000"/><path d="M1.3156 22.9774C0.846622 23.4464 0.846622 24.2085 1.3156 24.6775L10.9577 34.3195C11.4266 34.7885 12.1887 34.7885 12.6577 34.3195L23.1484 23.8288L11.8063 12.4867L1.3156 22.9774ZM10.6394 23.8288C10.6394 24.6021 10.324 25.3056 9.81591 25.8108C9.30785 26.3189 8.60996 26.6343 7.8339 26.6343C7.06064 26.6343 6.35717 26.3161 5.85189 25.8108C5.34383 25.3028 5.02838 24.6049 5.02838 23.8288C5.02838 23.0556 5.34383 22.3549 5.8491 21.8468C6.35717 21.3387 7.05506 21.0233 7.8339 21.0233C8.60717 21.0233 9.30785 21.3387 9.81591 21.8468C10.3212 22.3521 10.6394 23.0528 10.6394 23.8288ZM18.5814 23.8232C18.5814 24.5965 18.266 25.3 17.7579 25.8052C17.2498 26.3133 16.552 26.6288 15.7759 26.6288C15.0026 26.6288 14.2992 26.3105 13.7939 25.8052C13.2858 25.2972 12.9704 24.5993 12.9704 23.8232C12.9704 23.05 13.2858 22.3493 13.7911 21.8412C14.2992 21.3332 14.9971 21.0177 15.7759 21.0177C16.5492 21.0177 17.2498 21.3332 17.7579 21.8412C18.2632 22.3465 18.5814 23.0472 18.5814 23.8232Z" fill="#0090E2"/></svg>
+    <div class="scheid" aria-hidden="true"></div>
+    <span>ai-initiatievenbank</span>
+  </div>
+  <div class="rechts">
+    <div class="rolbalk" id="rolBalk" hidden><span class="rol jury" id="rolChip" hidden>beoordelaar</span><button type="button" class="linkknop" id="rolWissel">Uitloggen</button></div>
+    <div class="me" id="me"></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>slim werken met <em>ai</em></h1>
+    <p>Deel hoe jij AI inzet in je werk en beoordeel de initiatieven van collega's. Elk initiatief krijgt een score op 100 punten: het gemiddelde van alle beoordelingen.</p>
+  </div>
+  <div class="prijzen">
+  <div class="sticker" aria-hidden="true">
+    <svg viewBox="0 0 100 100"><defs><mask id="hap"><rect width="100" height="100" fill="white"/><circle cx="86" cy="84" r="15" fill="black"/><circle cx="73" cy="88" r="7" fill="black"/><circle cx="70" cy="80" r="6" fill="black"/><circle cx="73" cy="71" r="6.5" fill="black"/><circle cx="80" cy="66" r="6" fill="black"/><circle cx="89" cy="66" r="6.5" fill="black"/><circle cx="96" cy="71" r="6" fill="black"/><circle cx="78" cy="96" r="6" fill="black"/></mask></defs><circle cx="50" cy="50" r="48" fill="#fcf4e8" mask="url(#hap)"/></svg>
+    <div class="sticker-inhoud"><span class="sticker-getal num" id="stGetal">0</span><span class="sticker-label" id="stLabel">ideeën</span></div>
+  </div>
+  <div class="bokaal" role="img" id="bokaal" aria-label="Bokaal voor het team met de meeste inzendingen">
+    <svg viewBox="0 0 100 112" aria-hidden="true">
+      <path d="M20 16 H8 C8 38 13 48 25 53" fill="none" stroke="#ffbdc2" stroke-width="7" stroke-linecap="round"/>
+      <path d="M80 16 H92 C92 38 87 48 75 53" fill="none" stroke="#ffbdc2" stroke-width="7" stroke-linecap="round"/>
+      <path d="M16 6 H84 V36 C84 60 69 74 50 74 C31 74 16 60 16 36 Z" fill="#ffbdc2"/>
+      <rect x="43" y="72" width="14" height="10" fill="#ffbdc2"/>
+      <path d="M36 82 H64 L68 88 H32 Z" fill="#ffbdc2"/>
+      <rect x="22" y="87" width="56" height="23" rx="4" fill="#6e0430"/>
+    </svg>
+    <div class="bokaal-beker"><span class="bokaal-label" id="bkLabel">koploper</span><span class="bokaal-team" id="bkTeam">?</span></div>
+    <div class="bokaal-voet" id="bkVoet">meeste ideeën</div>
+  </div>
+  </div>
+</section>
+
+<main class="werk">
+  <section class="teamstand" aria-label="Teamstand">
+    <div>
+      <div class="lbl">Teamstand · meeste inzendingen</div>
+      <h2 id="tsKop">nog geen inzendingen</h2>
+      <p class="sub" id="tsSub">Welk team dient als eerste een initiatief in?</p>
+    </div>
+    <div class="teams" id="tsTeams"></div>
+  </section>
+
+  <section class="cijfers" aria-label="Samenvatting">
+    <div class="cijfer"><span>Initiatieven</span><b class="num" id="sCount">–</b><small id="sCountSub">&nbsp;</small></div>
+    <div class="cijfer"><span>Beoordelingen</span><b class="num" id="sReviews">–</b><small id="sReviewsSub">&nbsp;</small></div>
+    <div class="cijfer"><span>Gemiddelde score</span><b class="num" id="sAvg">–</b><small>van 100 punten</small></div>
+    <div class="cijfer"><span>Koploper</span><b class="num" id="sTop">–</b><small id="sTopSub">&nbsp;</small></div>
+  </section>
+
+  <div id="banner" hidden class="melding"></div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="list" aria-selected="true">ranglijst</button>
+    <button class="tab" role="tab" data-tab="todo" aria-selected="false" hidden>te beoordelen<span class="tel" id="todoCount">0</span></button>
+    <button class="tab" role="tab" data-tab="new" aria-selected="false" id="newTab">indienen</button>
+    <button class="tab" role="tab" data-tab="rubric" aria-selected="false">puntentelling</button>
+  </nav>
+
+  <section id="v-list" class="view" style="display:flex;flex-direction:column;gap:14px">
+    <div class="balk-filters">
+      <input type="text" id="q" placeholder="Zoek op titel, tool of beschrijving" aria-label="Zoeken">
+      <select id="fTeam" aria-label="Team"></select>
+      <select id="fCat" aria-label="Categorie"></select>
+      <select id="fSort" aria-label="Sorteren">
+        <option value="score">Hoogste score</option>
+        <option value="new">Nieuwste eerst</option>
+        <option value="reviews">Meeste beoordelingen</option>
+      </select>
+      <button class="knop licht" id="exportBtn" hidden>exporteer</button>
+    </div>
+    <div class="legenda" id="legend"></div>
+    <div class="lijst" id="list"></div>
+  </section>
+
+  <section id="v-todo" class="view" hidden style="flex-direction:column;gap:14px">
+    <p class="zacht" id="todoLead"></p>
+    <div class="lijst" id="todoList"></div>
+  </section>
+
+  <section id="v-new" class="view" hidden>
+    <form class="indienen" id="form" novalidate>
+      <div class="veld vol"><h2 id="formTitle">nieuw initiatief</h2><p class="zacht">Beschrijf kort wat je doet, zodat collega's het kunnen beoordelen en overnemen.</p></div>
+      <div class="veld vol"><label for="iTitle">Titel</label><input type="text" id="iTitle" maxlength="90" placeholder="Bijv. Vergaderverslagen automatisch samenvatten" required></div>
+      <div class="veld vol"><label for="iDesc">Wat doet het en hoe werkt het?</label><textarea id="iDesc" maxlength="3000" placeholder="Welk probleem lost het op, welke stappen volg je, wat levert het op?" required></textarea></div>
+      <div class="veld"><label for="iNaam">Je naam</label><input type="text" id="iNaam" maxlength="60" autocomplete="name" required></div>
+      <div class="veld"><label for="iTeam">Jouw team</label><select id="iTeam" required><option value="">Kies je team</option></select></div>
+      <div class="veld"><label for="iTools">Gebruikte AI-tool(s)</label><input type="text" id="iTools" maxlength="120" placeholder="Bijv. Claude, Copilot, ChatGPT"></div>
+      <div class="veld"><label for="iCat">Categorie</label><select id="iCat"></select></div>
+      <div class="veld"><label for="iStatus">Status</label>
+        <select id="iStatus"><option value="idee">Idee</option><option value="test">In test</option><option value="gebruik">In gebruik</option></select></div>
+      <div class="veld"><label for="iHours">Geschatte tijdswinst per week</label><input type="number" id="iHours" min="0" max="80" step="0.5" placeholder="In uren"><span class="hint">Voor jezelf, als indicatie voor de beoordelaars.</span></div>
+      <div class="veld vol"><label for="iLink">Link naar uitleg of voorbeeld <span class="zacht">(optioneel)</span></label><input type="url" id="iLink" maxlength="400" placeholder="https://"></div>
+      <div class="voet">
+        <button class="knop" type="submit" id="saveInit">indienen</button>
+        <button class="knop licht" type="button" id="cancelEdit" hidden>annuleren</button>
+        <span class="zacht" id="formMsg" role="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <section id="v-rubric" class="view" hidden style="flex-direction:column;gap:16px">
+    <div class="binnenkort-wrap">
+    <div class="binnenkort-melding" role="status"><span>binnenkort</span></div>
+    <div class="vervaagd" aria-hidden="true" inert>
+    <div class="uitleg">
+      <h2>zo wordt gescoord</h2>
+      <p>Iedere collega geeft per criterium een waardering van 1 tot 5. Die waardering wordt omgerekend naar punten naar rato van het gewicht: een 4 op Tijdswinst levert 4/5 × 25 = 20 punten op. Samen vormen de vijf criteria maximaal 100 punten.</p>
+      <p>De score van een initiatief is het gemiddelde van alle beoordelingen. Je eigen initiatief beoordeel je niet. Je kunt je beoordeling later altijd aanpassen.</p>
+    </div>
+    <div class="rubriek"><table id="rubricTable"></table></div>
+    </div>
+    </div>
+  </section>
+</main>
+
+<button class="pizza" id="pizzaBtn" type="button" aria-haspopup="dialog">
+  <svg viewBox="0 0 120 130" aria-hidden="true">
+    <path d="M10 26 Q60 6 110 26 L60 126 Z" fill="#ffcf5c"/>
+    <path d="M4 18 Q60 -6 116 18 L110 31 Q60 10 10 31 Z" fill="#d98a3a"/>
+    <circle cx="52" cy="78" r="7.5" fill="#e31837"/>
+    <circle cx="72" cy="70" r="6" fill="#e31837"/>
+    <circle cx="60" cy="100" r="5" fill="#e31837"/>
+    <circle cx="38" cy="64" r="4" fill="#e31837"/>
+  </svg>
+  <span class="pizza-tekst"><span>gratis pizza?</span><span>klik hier!</span></span>
+</button>
+</div>
+
+<div class="slot" id="slot">
+  <form id="slotForm" novalidate>
+    <h2>even inloggen</h2>
+    <p class="zacht">Deze pagina is alleen voor het team. Vul het wachtwoord in om verder te gaan.</p>
+    <label for="slotPw" style="font-weight:500">Wachtwoord</label>
+    <div class="rij">
+      <input type="password" id="slotPw" autocomplete="current-password" required>
+      <button class="knop" type="submit" id="slotKnop">open</button>
+    </div>
+    <p class="fout" id="slotFout" role="alert"></p>
+  </form>
+  <form id="naamForm" novalidate hidden>
+    <h2>hoe heet je?</h2>
+    <p class="zacht">Vul je naam in. Zo worden jouw beoordelingen apart bijgehouden en tel je één keer mee per initiatief. Gebruik steeds dezelfde naam.</p>
+    <label for="naamIn" style="font-weight:500">Je naam</label>
+    <div class="rij">
+      <input type="text" id="naamIn" maxlength="60" autocomplete="name" required>
+      <button class="knop" type="submit">verder</button>
+    </div>
+    <p class="fout" id="naamFout" role="alert"></p>
+  </form>
+</div>
+<div id="popup" hidden></div>
+
+<div id="drawer" hidden></div>
+<div id="toast" class="toast" hidden role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
