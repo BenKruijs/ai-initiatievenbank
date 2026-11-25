@@ -16,7 +16,7 @@ const CRIT = [
 ];
 const CATS = ['Schrijven & communicatie','Data & analyse','Automatisering','Klantcontact','Onderzoek & kennis','Planning & organisatie','Overig'];
 const STATUS = {idee:'Idee', test:'In test', gebruik:'In gebruik'};
-const TEAMS = ['Digital','LSM','Data','Brand','NPD'];
+const TEAMS = ['Digital','LSM','Data','Brand','NPD','Studio'];
 
 const CFG = window.AIIB_CONFIG || {};
 const $ = s => document.querySelector(s);
